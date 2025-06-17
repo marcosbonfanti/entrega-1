@@ -1,0 +1,29 @@
+[
+  {
+    "id": 1,
+    "title": "teclado",
+    "description": "teclado gamer",
+    "price": 100000,
+    "thumbnail": "thumbnail.com",
+    "code": "art423452345",
+    "stock": 3
+  },
+  {
+    "id": 2,
+    "title": "mouse",
+    "description": "mouse gamer",
+    "price": 50000,
+    "thumbnail": "thumbnail.com",
+    "code": "art2345",
+    "stock": 56
+  },
+  {
+    "id": 3,
+    "title": "mouse",
+    "description": "mouse gamer",
+    "price": 50000,
+    "thumbnail": "thumbnail.com",
+    "code": "art2345",
+    "stock": 56
+  }
+]
