@@ -6,21 +6,21 @@ export default class ProductManager {
     this.path = path;
   }
 
-  async addProduct(productObject) {
+  async addProduct(productObject, idPredefined) {
     const { title, description, price, thumbnail, code, stock } = productObject;
     const products = await this.getProducts();
     let id;
     if(products.length === 0) {
-      id = 0;
+      id = 1
+    } else if (idPredefined === 0 ) {
+      id = Math.max(...products.map(p => p.id)) + 1;
     } else {
-      id = products[products.length -1].id +=1
+      id = idPredefined;
     }
-    
     products.push({id, title, description, price, thumbnail, code, stock})
     const json = JSON.stringify(products, null, 2)
     await fs.promises.writeFile(this.path, json);
     console.log("Product added")
-
   }
 
   async getProducts() {
@@ -36,13 +36,35 @@ export default class ProductManager {
   async getProductById(id) {
     const products = await this.getProducts();
     const productFound = products.filter(product => product.id === id);
-    console.log(productFound)
     if (productFound.length === 1) {
       return productFound[0];
     } else {
       return [];
     }
-  }  
+  }
+
+  async deleteProductById(id) {
+    const products = await this.getProducts();
+    const productFound = products.filter(product => product.id === id);
+    if (productFound.length === 1) {
+      const productsDeleted = products.filter(product => product.id !== id);
+      const json = JSON.stringify(productsDeleted, null, 2);
+      await fs.promises.writeFile(this.path, json);
+      console.log("ProductDeleted");
+      return productFound[0];
+    } else {
+      return [];
+    }
+  }
+
+
+  async updateProductById(id, productObject) {
+    const productDeleted = await this.deleteProductById(id)
+    if(productDeleted) {
+      await productManager.addProduct(productObject, id);
+    }
+  }
+
 }
 
 export const productManager = new ProductManager();
