@@ -1,9 +1,14 @@
 import fs from "fs";
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export default class ProductManager {
 
-  constructor(path = './products.json') {
-    this.path = path;
+  constructor(filePath = '../products.json') {
+    this.path = path.resolve(__dirname, filePath);
   }
 
   async addProduct(productObject, idPredefined) {
@@ -50,10 +55,9 @@ export default class ProductManager {
       const productsDeleted = products.filter(product => product.id !== id);
       const json = JSON.stringify(productsDeleted, null, 2);
       await fs.promises.writeFile(this.path, json);
-      console.log("ProductDeleted");
       return productFound[0];
     } else {
-      return [];
+      return null;
     }
   }
 
@@ -62,6 +66,9 @@ export default class ProductManager {
     const productDeleted = await this.deleteProductById(id)
     if(productDeleted) {
       await productManager.addProduct(productObject, id);
+      return { ...productObject, id };
+    } else {
+      return null;
     }
   }
 
