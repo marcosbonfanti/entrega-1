@@ -18,7 +18,7 @@ productsRouter.post('/', async (req, res) => {
 productsRouter.get('/:id', async (req, res) => {
   const id = parseInt(req.params.id);
   const product = await productManager.getProductById(id);
-  if(product.length === 0){
+  if(!product){
     res.status(404).json({ error: 'Producto no encontrado' });
   } else {
     res.json(product)

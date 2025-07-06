@@ -15,14 +15,14 @@ export default class ProductManager {
     const { title, description, price, thumbnail, code, stock } = productObject;
     const products = await this.getProducts();
     let id;
-    if(products.length === 0) {
+    if (products.length === 0) {
       id = 1
-    } else if (idPredefined === 0 ) {
+    } else if (idPredefined === 0) {
       id = Math.max(...products.map(p => p.id)) + 1;
     } else {
       id = idPredefined;
     }
-    products.push({id, title, description, price, thumbnail, code, stock})
+    products.push({ id, title, description, price, thumbnail, code, stock })
     const json = JSON.stringify(products, null, 2)
     await fs.promises.writeFile(this.path, json);
     console.log("Product added")
@@ -40,12 +40,8 @@ export default class ProductManager {
 
   async getProductById(id) {
     const products = await this.getProducts();
-    const productFound = products.filter(product => product.id === id);
-    if (productFound.length === 1) {
-      return productFound[0];
-    } else {
-      return [];
-    }
+    const productFound = products.find(product => product.id === id);
+    return productFound || null;
   }
 
   async deleteProductById(id) {
@@ -64,7 +60,7 @@ export default class ProductManager {
 
   async updateProductById(id, productObject) {
     const productDeleted = await this.deleteProductById(id)
-    if(productDeleted) {
+    if (productDeleted) {
       await productManager.addProduct(productObject, id);
       return { ...productObject, id };
     } else {
