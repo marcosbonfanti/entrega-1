@@ -1,0 +1,11 @@
+<h1>📦 Lista de Productos</h1>
+<ul>
+  {{#each products}}
+    <li>
+      <strong>{{title}}</strong> - ${{price}} <br>
+      {{description}} <br>
+      <img src="{{thumbnail}}" alt="{{title}}" width="100"> <br>
+      Código: {{code}} | Stock: {{stock}}
+    </li>
+  {{/each}}
+</ul>
