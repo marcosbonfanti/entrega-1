@@ -1,21 +1,13 @@
 const socket = io();
 
-const form = document.getElementById('form-agregar');
-const lista = document.getElementById('productos-lista');
-
-form.addEventListener('submit', (e) => {
-  e.preventDefault();
-
-  const formData = new FormData(form);
-  const producto = Object.fromEntries(formData.entries());
-  producto.price = parseFloat(producto.price);
-  producto.stock = parseInt(producto.stock);
-
-  socket.emit('nuevoProducto', producto);
-  form.reset();
+socket.on('connect', () => {
+  console.log("Conectado al servidor Socket.IO");
 });
 
 socket.on('productosActualizados', (productos) => {
+  console.log("🔄 productosActualizados recibido:", productos);
+
+  const lista = document.getElementById('productos-lista');
   lista.innerHTML = '';
   productos.forEach(p => {
     const li = document.createElement('li');
@@ -26,4 +18,17 @@ socket.on('productosActualizados', (productos) => {
     `;
     lista.appendChild(li);
   });
+});
+
+const form = document.getElementById('form-agregar');
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+
+  const formData = new FormData(form);
+  const producto = Object.fromEntries(formData.entries());
+  producto.price = parseFloat(producto.price);
+  producto.stock = parseInt(producto.stock);
+
+  socket.emit('nuevoProducto', producto);
+  form.reset();
 });

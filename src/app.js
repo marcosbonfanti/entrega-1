@@ -4,6 +4,7 @@ import allRoutes from "./routes/index.js";
 import viewsRouter from "./routes/views.router.js";
 import http from "http";
 import { Server } from "socket.io"
+import { productManager } from './ProductManager.js';
 
 const PORT = 3000;
 const app = express();
@@ -28,7 +29,8 @@ io.on('connection', socket => {
   socket.on('nuevoProducto', async producto => {
     await productManager.addProduct(producto, 0);
     const productosActualizados = await productManager.getProducts();
-    io.emit('productosActualizados', productosActualizados); // Broadcast
+    console.log('nuevoProducto on')
+    io.emit('productosActualizados', productosActualizados);
   });
 });
 
