@@ -25,10 +25,18 @@ cartsRouter.post('/:cid/product/:pid', async (req, res) => {
   const productId = parseInt(req.params.pid);
   const cart = await cartManager.addProductToCart(cartId, productId);
   if (!cart) {
-    res.status(404).json({ message: 'Carrito o producto no encontrado' });
-  } else {
-    res.json(cart);
+    if (req.headers.accept.includes("text/html")) {
+      return res.status(404).send("Carrito o producto no encontrado");
+    } else {
+      return res.status(404).json({ message: 'Carrito o producto no encontrado' });
+    }
   }
+
+  if (req.headers.accept.includes("text/html")) {
+    return res.redirect("/");
+  }
+
+  res.json(cart);
 });
 
 export default cartsRouter;
