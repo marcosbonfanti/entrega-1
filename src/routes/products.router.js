@@ -1,10 +1,10 @@
 import { Router } from "express";
 import { productManager } from '../ProductManager.js';
+import { getIO } from "../socket.js";
 
 const productsRouter = Router();
 
 productsRouter.get('/', async (req, res) => {
-  console.log('hola desde router')
   const products = await productManager.getProducts();
   res.json(products);
 });
@@ -12,6 +12,10 @@ productsRouter.get('/', async (req, res) => {
 productsRouter.post('/', async (req, res) => {
   const product = req.body;
   await productManager.addProduct(product, 0);
+  const io = getIO();
+  
+  const products = await productManager.getProducts();
+  io.emit("productosActualizados", products);
   res.status(201).json({ message: 'Producto agregado correctamente' });
 });
 
