@@ -3,13 +3,13 @@ import hbs from "express-handlebars"
 import allRoutes from "./routes/index.js";
 import viewsRouter from "./routes/views.router.js";
 import http from "http";
-import { Server } from "socket.io"
+import { initSocket } from "./socket.js";
 import { productManager } from './ProductManager.js';
 
 const PORT = 3000;
 const app = express();
 const serverHttp = http.createServer(app)
-const io = new Server(serverHttp)
+const io = initSocket(serverHttp);
 
 app.engine("handlebars", hbs.engine());
 app.set("views", import.meta.dirname + "/views");

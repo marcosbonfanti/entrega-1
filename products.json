@@ -1,29 +1,29 @@
 [
   {
     "id": 1,
-    "title": "teclado",
-    "description": "teclado gamer",
-    "price": 100000,
-    "thumbnail": "thumbnail.com",
-    "code": "art423452345",
-    "stock": 3
+    "title": "Sleek Metal Ball",
+    "description": "Licensed",
+    "price": 500,
+    "thumbnail": "http://placeimg.com/640/480",
+    "code": "b",
+    "stock": 260
   },
   {
     "id": 2,
-    "title": "mouse",
-    "description": "mouse gamer",
-    "price": 50000,
-    "thumbnail": "thumbnail.com",
-    "code": "art2345",
-    "stock": 56
+    "title": "Generic Cotton Chips",
+    "description": "Generic",
+    "price": 483,
+    "thumbnail": "http://placeimg.com/640/480",
+    "code": "s",
+    "stock": 899
   },
   {
     "id": 3,
-    "title": "mouse",
-    "description": "mouse gamer",
-    "price": 50000,
-    "thumbnail": "thumbnail.com",
-    "code": "art2345",
-    "stock": 56
+    "title": "Tasty Plastic Salad",
+    "description": "Tasty",
+    "price": 896,
+    "thumbnail": "http://placeimg.com/640/480",
+    "code": "k",
+    "stock": 838
   }
 ]
