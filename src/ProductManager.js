@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from 'path';
 import { fileURLToPath } from 'url';
+import Product from "./models/products.model.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -13,57 +14,40 @@ export default class ProductManager {
 
   async addProduct(productObject, idPredefined) {
     const { title, description, price, thumbnail, code, stock } = productObject;
-    const products = await this.getProducts();
-    let id;
-    if (products.length === 0) {
-      id = 1
-    } else if (idPredefined === 0) {
-      id = Math.max(...products.map(p => p.id)) + 1;
-    } else {
-      id = idPredefined;
-    }
-    products.push({ id, title, description, price, thumbnail, code, stock })
-    const json = JSON.stringify(products, null, 2)
-    await fs.promises.writeFile(this.path, json);
-    console.log("Product added")
+    const product = new Product({ title, description, price, thumbnail, code, stock });
+    const savedProduct = await product.save();
+    console.log("Product added");
+    return savedProduct;
   }
 
   async getProducts() {
-    try {
-      const json = await fs.promises.readFile(this.path, "utf-8");
-      return JSON.parse(json);
-    } catch (error) {
-      await fs.promises.writeFile(this.path, JSON.stringify([]));
-      return [];
-    }
+    return await Product.find().lean();
   }
 
   async getProductById(id) {
-    const products = await this.getProducts();
-    const productFound = products.find(product => product.id === id);
-    return productFound || null;
+    try {
+      const product = await Product.findById(id).lean();
+      return product || null;
+    } catch (err) {
+      return null;
+    }
   }
 
   async deleteProductById(id) {
-    const products = await this.getProducts();
-    const productFound = products.filter(product => product.id === id);
-    if (productFound.length === 1) {
-      const productsDeleted = products.filter(product => product.id !== id);
-      const json = JSON.stringify(productsDeleted, null, 2);
-      await fs.promises.writeFile(this.path, json);
-      return productFound[0];
-    } else {
+    try {
+      const deleted = await Product.findByIdAndDelete(id);
+      return deleted || null;
+    } catch (err) {
       return null;
     }
   }
 
 
   async updateProductById(id, productObject) {
-    const productDeleted = await this.deleteProductById(id)
-    if (productDeleted) {
-      await productManager.addProduct(productObject, id);
-      return { ...productObject, id };
-    } else {
+    try {
+      const updated = await Product.findByIdAndUpdate(id, productObject, { new: true });
+      return updated || null;
+    } catch (err) {
       return null;
     }
   }
