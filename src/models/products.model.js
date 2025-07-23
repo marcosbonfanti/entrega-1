@@ -5,10 +5,10 @@ const productsCollection = "products";
 const productSchema = new mongoose.Schema({
   title: String,
   description: String,
-  price: Int16Array,
+  price: Number,
   thumbnail: String,
   code: String,
-  stock: Int16Array
+  stock: Number
 })
 
 const productModel = mongoose.model(productsCollection, productSchema);
