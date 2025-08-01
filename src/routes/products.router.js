@@ -1,12 +1,65 @@
 import { Router } from "express";
 import { productManager } from '../ProductManager.js';
+import Product from '../models/products.model.js';
 import { getIO } from "../socket.js";
 
 const productsRouter = Router();
 
 productsRouter.get('/', async (req, res) => {
-  const products = await productManager.getProducts();
-  res.json(products);
+  try {
+    const {
+      limit = 10,
+      page = 1,
+      sort,
+      query
+    } = req.query;
+
+    const parsedLimit = parseInt(limit);
+    const parsedPage = parseInt(page);
+
+    const filter = {};
+
+    if (query) {
+      if (query === 'disponible') {
+        filter.stock = { $gt: 0 };
+      } else {
+        filter.category = query;
+      }
+    }
+    
+    const sortOption = {};
+    if (sort === 'asc') sortOption.price = 1;
+    else if (sort === 'desc') sortOption.price = -1;
+
+    const totalProducts = await Product.countDocuments(filter);
+    const totalPages = Math.ceil(totalProducts / parsedLimit);
+    const skip = (parsedPage - 1) * parsedLimit;
+
+    const products = await Product.find(filter)
+      .sort(sortOption)
+      .skip(skip)
+      .limit(parsedLimit)
+      .lean();
+
+    const hasPrevPage = parsedPage > 1;
+    const hasNextPage = parsedPage < totalPages;
+    const baseUrl = `${req.protocol}://${req.get('host')}${req.baseUrl}`;
+
+    res.json({
+      status: 'success',
+      payload: products,
+      totalPages,
+      prevPage: hasPrevPage ? parsedPage - 1 : null,
+      nextPage: hasNextPage ? parsedPage + 1 : null,
+      page: parsedPage,
+      hasPrevPage,
+      hasNextPage,
+      prevLink: hasPrevPage ? `${baseUrl}?page=${parsedPage - 1}&limit=${parsedLimit}` : null,
+      nextLink: hasNextPage ? `${baseUrl}?page=${parsedPage + 1}&limit=${parsedLimit}` : null
+    });        
+  } catch (error) {
+    res.status(500).json({ status: 'error', message: error.message });
+  }
 });
 
 productsRouter.post('/', async (req, res) => {
