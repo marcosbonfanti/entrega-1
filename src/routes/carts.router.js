@@ -11,7 +11,7 @@ cartsRouter.post('/', async (req, res) => {
 
 
 cartsRouter.get('/:id', async (req, res) => {
-  const id = parseInt(req.params.id);
+  const id = req.params.id
   const cart = await cartManager.getCartById(id);
   if (!cart) {
     res.status(404).json({ message: 'Carrito no encontrado' });

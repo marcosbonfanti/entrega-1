@@ -3,13 +3,17 @@ import hbs from "express-handlebars"
 import allRoutes from "./routes/index.js";
 import viewsRouter from "./routes/views.router.js";
 import http from "http";
+import { connectToDB } from "./config/db.js";
 import { initSocket } from "./socket.js";
 import { productManager } from './ProductManager.js';
+import mongoose from 'mongoose';
 
 const PORT = 3000;
 const app = express();
 const serverHttp = http.createServer(app)
 const io = initSocket(serverHttp);
+
+connectToDB();
 
 app.engine("handlebars", hbs.engine());
 app.set("views", import.meta.dirname + "/views");
@@ -34,4 +38,4 @@ io.on('connection', socket => {
   });
 });
 
-serverHttp.listen(PORT, () => console.log(`listening on port ${PORT}`));
+serverHttp.listen(PORT, () => console.log(`Server running on port: ${PORT}`));
